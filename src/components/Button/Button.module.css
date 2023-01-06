@@ -6,7 +6,7 @@
   text-align: center;
   display: block;
   margin: 35px auto;
-  color: #fff;
+  color: yellow;
   border: 0;
   text-decoration: none;
   cursor: pointer;
@@ -22,5 +22,6 @@
 
 .Button:hover,
 .Button:focus {
-  background-color: #303f9f;
+  color: #303f9f;
+  background-color: yellow;
 }
