@@ -28,7 +28,7 @@ export default class Searchbar extends Component {
     return (
       <header className={css.Searchbar}>
         <form className={css.SearchForm} onSubmit={this.handleSubmit}>
-          <button type="submit" className={css.searchFormButton}>
+          <button type="submit" className={css.SearchFormButton}>
             <span className={css.SearchFormButtonLabel}>Search</span>
           </button>
           <input
