@@ -22,7 +22,7 @@ export class Modal extends Component {
 
   render() {
     return createPortal(
-      <div className="Overlay" onClick={this.handleBackdrop}>
+      <div className={css.Overlay} onClick={this.handleBackdrop}>
         <div className={css.Modal}>
           <img src={this.props.largeImageURL} alt="" />
         </div>

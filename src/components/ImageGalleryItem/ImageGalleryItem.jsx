@@ -16,9 +16,9 @@ export class ImageGalleryItem extends Component {
 
   render() {
     return (
-      <li className={css.imageGalleryItem} onClick={this.onToggleModal}>
+      <li className={css.ImageGalleryItem} onClick={this.onToggleModal}>
         <img
-          className={css.imageGalleryItemImage}
+          className={css.ImageGalleryItemImage}
           src={this.props.webformatURL}
           alt=""
         />

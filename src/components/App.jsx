@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button } from './Button/Button';
 import Searchbar from './Searchbar/Searchbar';
-//
+import css from '../components/App.module.css';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { pixabayGetImages } from 'services/api';
 import { Loader } from './Loader/Loader';
@@ -17,37 +17,11 @@ export class App extends Component {
     error: null,
   };
 
-  // async componentDidUpdate(_, prevState) {
-  //   const { query, page } = this.state;
-  //   if (prevState.query !== query || prevState.page !== page) {
-  //     try {
-  //       this.setState({ isLoading: true });
-  //       const { hits, totalHits } = await pixabayGetImages(query, page);
-  //       this.setState(prevState => ({
-  //         images: [...prevState.images, ...hits],
-  //         totalHits:
-  //           page === 1
-  //             ? totalHits - hits.length
-  //             : totalHits - [...prevState.images, ...hits].length,
-  //       }));
-  //     } catch (error) {
-  //       return error;
-  //     } finally {
-  //       this.setState({ isLoading: false });
-  //     }
-  //   }
-  // }
-
-  handleSubmit = query => {
-    this.setState({ query, page: 1 });
-  };
-
   async componentDidUpdate(_, prevState) {
     if (
       prevState.query !== this.state.query ||
       prevState.page !== this.state.page
     ) {
-      // console.log('query string has changed');
       this.setState({
         isLoading: true,
       });
@@ -74,18 +48,22 @@ export class App extends Component {
     }
   }
 
+  handleSubmit = query => {
+    this.setState({ query, page: 1 });
+  };
+
   handleLoadMore = () => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
   render() {
     return (
-      <>
+      <div className={css.App}>
         <Searchbar onSubmit={this.handleSubmit} />
         <ImageGallery images={this.state.images} />
-        <Button onLoadMore={this.handleLoadMore} />
         {this.state.isLoading && <Loader />}
-      </>
+        <Button onLoadMore={this.handleLoadMore} />
+      </div>
     );
   }
 }
