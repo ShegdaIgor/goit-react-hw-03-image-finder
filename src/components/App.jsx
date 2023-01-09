@@ -62,7 +62,9 @@ export class App extends Component {
         <Searchbar onSubmit={this.handleSubmit} />
         <ImageGallery images={this.state.images} />
         {this.state.isLoading && <Loader />}
-        <Button onLoadMore={this.handleLoadMore} />
+        {this.state.totalHits > this.state.images.length && (
+          <Button onLoadMore={this.handleLoadMore} />
+        )}
       </div>
     );
   }
