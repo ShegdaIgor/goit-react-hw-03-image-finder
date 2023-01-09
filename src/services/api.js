@@ -3,7 +3,7 @@ import axios from 'axios';
 const BASE_URL = 'https://pixabay.com/api/';
 const KEY = '31796661-d78e1c08e6ba05d0253f19feb';
 
-const getImages = axios.create({
+const getImagesInstance = axios.create({
   baseURL: BASE_URL,
   params: {
     key: KEY,
@@ -14,6 +14,6 @@ const getImages = axios.create({
 });
 
 export const pixabayGetImages = async (query, page) => {
-  const { data } = await getImages.get(`?q=${query}&page=${page}`);
+  const { data } = await getImagesInstance.get(`?q=${query}&page=${page}`);
   return data;
 };

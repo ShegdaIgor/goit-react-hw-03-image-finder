@@ -1,60 +1,90 @@
 import React, { Component } from 'react';
 import { Button } from './Button/Button';
 import Searchbar from './Searchbar/Searchbar';
-import { pixabayGetImages } from './pixabayImages/pixabayImages';
-// import { ImageGallery } from './ImageGallery/ImageGallery';
-
-const FETCH_STATUS = {
-  Idle: 'idle',
-  Pending: 'pending',
-  Resolved: 'resolved',
-  Rejected: 'rejected',
-};
+//
+import { ImageGallery } from './ImageGallery/ImageGallery';
+import { pixabayGetImages } from 'services/api';
+import { Loader } from './Loader/Loader';
 
 export class App extends Component {
   state = {
     images: [],
-    status: 'idle',
     page: 1,
     query: '',
     totalHits: null,
+    largeImageURL: '',
+    isLoading: false,
+    error: null,
+  };
+
+  // async componentDidUpdate(_, prevState) {
+  //   const { query, page } = this.state;
+  //   if (prevState.query !== query || prevState.page !== page) {
+  //     try {
+  //       this.setState({ isLoading: true });
+  //       const { hits, totalHits } = await pixabayGetImages(query, page);
+  //       this.setState(prevState => ({
+  //         images: [...prevState.images, ...hits],
+  //         totalHits:
+  //           page === 1
+  //             ? totalHits - hits.length
+  //             : totalHits - [...prevState.images, ...hits].length,
+  //       }));
+  //     } catch (error) {
+  //       return error;
+  //     } finally {
+  //       this.setState({ isLoading: false });
+  //     }
+  //   }
+  // }
+
+  handleSubmit = query => {
+    this.setState({ query, page: 1 });
   };
 
   async componentDidUpdate(_, prevState) {
-    const { query, page } = this.state;
-
     if (
       prevState.query !== this.state.query ||
       prevState.page !== this.state.page
     ) {
-      this.setState({ status: FETCH_STATUS.Pending });
+      // console.log('query string has changed');
+      this.setState({
+        isLoading: true,
+      });
+
       try {
-        const data = await pixabayGetImages(query, page);
-        if (data.hits.length === 0) {
-          this.setState({ status: FETCH_STATUS.Rejected });
-          return;
-        }
-        this.setState(prevState => ({
-          images: page > 1 ? [...prevState.images, ...data.hits] : data.hits,
-          page,
-          status: FETCH_STATUS.Resolved,
-          totalHits: data.hits.length,
-        }));
+        const { hits, totalHits } = await pixabayGetImages(
+          this.state.query,
+          this.state.page
+        );
+        this.setState({
+          images:
+            this.state.page === 1 ? hits : [...this.state.images, ...hits],
+          totalHits: totalHits,
+        });
       } catch (error) {
-        this.setState({ status: FETCH_STATUS.Rejected });
+        this.setState({
+          error: error,
+        });
+      } finally {
+        this.setState({
+          isLoading: false,
+        });
       }
     }
   }
 
-  processSubmit = query => {
-    this.setState({ query });
+  handleLoadMore = () => {
+    this.setState(prevState => ({ page: prevState.page + 1 }));
   };
+
   render() {
-    // const { images, status, page, query, totalHits } = this.state;
     return (
       <>
-        <Searchbar onSubmit={this.processSubmit} />
+        <Searchbar onSubmit={this.handleSubmit} />
+        <ImageGallery images={this.state.images} />
         <Button onLoadMore={this.handleLoadMore} />
+        {this.state.isLoading && <Loader />}
       </>
     );
   }
