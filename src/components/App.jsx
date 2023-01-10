@@ -12,7 +12,6 @@ export class App extends Component {
     page: 1,
     query: '',
     totalHits: null,
-    largeImageURL: '',
     isLoading: false,
     error: null,
   };
@@ -31,10 +30,17 @@ export class App extends Component {
           this.state.query,
           this.state.page
         );
+
+        if (hits.length === 0) {
+          this.setState({ error: 'error' });
+          return;
+        }
+
         this.setState({
           images:
             this.state.page === 1 ? hits : [...this.state.images, ...hits],
           totalHits: totalHits,
+          error: null,
         });
       } catch (error) {
         this.setState({
@@ -49,7 +55,7 @@ export class App extends Component {
   }
 
   handleSubmit = query => {
-    this.setState({ query, page: 1 });
+    this.setState({ query, page: 1, error: null });
   };
 
   handleLoadMore = () => {
@@ -60,11 +66,28 @@ export class App extends Component {
     return (
       <div className={css.App}>
         <Searchbar onSubmit={this.handleSubmit} />
-        <ImageGallery images={this.state.images} />
-        {this.state.isLoading && <Loader />}
-        {this.state.totalHits > this.state.images.length && (
-          <Button onLoadMore={this.handleLoadMore} />
+        {this.state.error === 'error' && (
+          <p
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              fontSize: 20,
+              color: '#010101',
+            }}
+          >
+            There is nothing here.
+          </p>
         )}
+        {this.state.error === null && (
+          <ImageGallery images={this.state.images} />
+        )}
+
+        {this.state.isLoading && <Loader />}
+        {this.state.totalHits > this.state.images.length &&
+          this.state.error === null && (
+            <Button onLoadMore={this.handleLoadMore} />
+          )}
       </div>
     );
   }
