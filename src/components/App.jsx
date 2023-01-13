@@ -32,16 +32,15 @@ export class App extends Component {
         );
 
         if (hits.length === 0) {
-          this.setState({ error: 'error' });
+          this.setState({ error: 'error', images: [] });
           return;
         }
 
-        this.setState({
-          images:
-            this.state.page === 1 ? hits : [...this.state.images, ...hits],
+        this.setState(prevState => ({
+          images: this.state.page === 1 ? hits : [...prevState.images, ...hits],
           totalHits: totalHits,
           error: null,
-        });
+        }));
       } catch (error) {
         this.setState({
           error: error,
@@ -63,6 +62,7 @@ export class App extends Component {
   };
 
   render() {
+    // console.log(this.state.images);
     return (
       <div className={css.App}>
         <Searchbar onSubmit={this.handleSubmit} />
